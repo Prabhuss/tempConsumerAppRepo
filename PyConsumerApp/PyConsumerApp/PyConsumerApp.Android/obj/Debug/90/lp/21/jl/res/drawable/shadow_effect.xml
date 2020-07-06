@@ -1,0 +1,1 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"><item android:id="@+id/ShadowEffectShape"><shape android:shape="oval"><corners android:radius="1dp" /></shape></item></layer-list>

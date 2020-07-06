@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid
+    x:Class="PyConsumerApp.Views.Templates.ProductListTemplate"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converter="clr-namespace:PyConsumerApp.Converters"
+    xmlns:helper="clr-namespace:PyConsumerApp.Helpers"
+    xmlns:rating="clr-namespace:Syncfusion.SfRating.XForms;assembly=Syncfusion.SfRating.XForms" 
+    xmlns:numeric="clr-namespace:Syncfusion.SfNumericUpDown.XForms;assembly=Syncfusion.SfNumericUpDown.XForms" 
+    xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    x:Name="productListTemplate">
+
+    <Grid.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converter:BooleanToStringConverter x:Key="boolToStringConverter" />
+            <converter:BooleanToColorConverter x:Key="boolToColorConverter" />
+        </ResourceDictionary>
+    </Grid.Resources>
+
+    <Grid
+        Margin="0,0,0,8"
+        ColumnSpacing="0"
+        HorizontalOptions="FillAndExpand"
+        RowSpacing="0"
+        VerticalOptions="FillAndExpand">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Default=Auto, Desktop=0.2*}" />
+            <ColumnDefinition Width="{OnIdiom Default=*, Desktop=*}" />
+            <ColumnDefinition Width="32" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Product Image  -->
+        <Image
+            Grid.RowSpan="4"
+            Margin="8,0,16,0"
+            Aspect="Fill"
+            BackgroundColor="{DynamicResource Gray-F0}"
+            HeightRequest="{OnIdiom Default=150,
+                                    Desktop=120}"
+            WidthRequest="{OnIdiom Default=140,
+                                   Desktop=200}">
+            <Image.Source>
+                <UriImageSource
+                    CacheValidity="14"
+                    CachingEnabled="true"
+                    Uri="{Binding PreviewImage}" />
+            </Image.Source>
+        </Image>
+
+        <!--  Product Name  -->
+        <Label
+            Grid.Column="1"
+            Margin="0,0,0,8"
+            FontFamily="{StaticResource Montserrat-SemiBold}"
+            LineBreakMode="TailTruncation"
+            MaxLines="2"
+            Style="{StaticResource LabelStyle}"
+            Text="{Binding productName}"
+            TextColor="{DynamicResource Gray-900}" />
+
+        <!--  Favourite Icon  -->
+        <Button
+            Grid.Column="2"
+            Margin="0,0,0,8"
+            Padding="0"
+            helper:RTLHelper.Margin="{OnIdiom Phone='0,0,0,0',
+                                              Tablet='0,0,4,0',
+                                              Desktop='0,0,8,0'}"
+            Command="{Binding ParentBindingContext.AddFavouriteCommand, Source={x:Reference productListTemplate}}"
+            CommandParameter="{Binding}"
+            Style="{StaticResource FavouriteButtonStyle}"
+            Text="{Binding IsFavourite, Converter={StaticResource boolToStringConverter}, ConverterParameter=1}"
+            TextColor="{Binding IsFavourite, Converter={x:StaticResource boolToColorConverter}, ConverterParameter=4}" />
+
+        <!--  Product Description  -->
+        <Label
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0,0,0,8"
+            FontFamily="{StaticResource Montserrat-Medium}"
+            FontSize="12"
+            LineBreakMode="TailTruncation"
+            LineHeight="{OnPlatform Android=1.25,
+                                    Default=-1}"
+            MaxLines="2"
+            Style="{StaticResource LabelStyle}"
+            Text="{Binding productDesc}" />
+
+        <StackLayout
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="0,0,0,16"
+            Orientation="Horizontal"
+            Spacing="2">
+
+            <!--  Product Price  -->
+            <Label
+                FontFamily="{StaticResource Montserrat-SemiBold}"
+                FontSize="20"
+                HorizontalOptions="Start"
+                LineHeight="{OnPlatform Android=1.25,
+                                        Default=-1}"
+                Style="{StaticResource LabelStyle}"
+                Text="{Binding SellingPrice, StringFormat='₹{0:0 }'}"
+                TextColor="{DynamicResource PrimaryColor}"
+                VerticalOptions="CenterAndExpand"
+                VerticalTextAlignment="Center" />
+
+            <Label
+                Margin="0,6,0,6"
+                FontFamily="{StaticResource Montserrat-Medium}"
+                FontSize="12"
+                HorizontalOptions="Start"
+                Style="{StaticResource LabelStyle}"
+                Text="{Binding mrp, StringFormat='₹{0:0.00}'}"
+                TextDecorations="Strikethrough"
+                VerticalOptions="Center"
+                VerticalTextAlignment="Center" />
+
+        </StackLayout>
+
+        <!--  Product Rating  -->
+        <StackLayout
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="0,0,0,16"
+            Orientation="Horizontal"
+            Spacing="2">
+            <numeric:SfNumericUpDown 
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     x:Name="numericUpDown" 
+                                     SpinButtonAlignment="Both" 
+                                     HeightRequest="50" WidthRequest="120"
+                                     FormatString="n"
+                                     Value="{Binding TotalQuantity,Mode=TwoWay}"
+                                     Maximum="5"
+                                     Minimum="1"
+                                     StepValue="1"
+                                     MaximumDecimalDigits="0"
+                                     />
+              <buttons:SfButton
+                        Grid.Column="1"
+                        helper:RTLHelper.Margin="{OnIdiom Default='44,0,16,0',Phone='8,0,0,0'}"
+                        Command="{Binding Path=ParentBindingContext.AddToCartCommand, Source={x:Reference productListTemplate}}"
+                        CommandParameter="{Binding .}"
+                        CornerRadius="4"
+                        HeightRequest="32"
+                        WidthRequest="70"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Center"
+                        Style="{StaticResource SfButtonStyle}"
+                        VerticalOptions="Center"
+                        VerticalTextAlignment="Center"
+                        BackgroundColor="Green">
+
+                <Label  Text="ADD" VerticalOptions="Center" HorizontalOptions="Center" LineHeight="{OnPlatform Android=1.5, Default=-1}"
+                        FontSize="12"  FontFamily="{StaticResource Montserrat-SemiBold}" 
+                        TextColor="White" />
+            </buttons:SfButton>
+
+        </StackLayout>
+        <!--rating:SfRating
+            Grid.Row="3"
+            Grid.Column="1"
+            RatingSettings="{StaticResource RatingSettings}"
+            Style="{StaticResource SfRatingStyle}"
+            Value="{Binding OverallRating}" /-->
+    </Grid>
+</Grid>

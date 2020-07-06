@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<ContentView
+    x:Class="PyConsumerApp.Views.Transaction.DeliveryView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:helper="clr-namespace:PyConsumerApp.Helpers"
+    xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    BackgroundColor="{DynamicResource Gray-White}">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <buttons:SfRadioGroupKey x:Key="DeliveryAddressGroup" />
+
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <StackLayout Spacing="0">
+
+        <!--  Header  -->
+        <Grid
+            Padding="0,16,0,0"
+            BackgroundColor="{DynamicResource Gray-White}"
+            RowSpacing="16">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="1" />
+            </Grid.RowDefinitions>
+
+            <Label
+                Grid.Column="0"
+                FontFamily="{StaticResource Montserrat-SemiBold}"
+                FontSize="16"
+                LineHeight="{OnPlatform Android=1.25,
+                                        Default=-1}"
+                Style="{StaticResource PriceLabelStyle}"
+                Text="{OnIdiom Default='Delivery Address',
+                               Phone='Deliver To'}"
+                TextColor="{DynamicResource Gray-900}" />
+
+            <!--  Total Price Label  -->
+            <Label
+                Grid.Column="1"
+                FontFamily="{StaticResource Montserrat-SemiBold}"
+                FontSize="16"
+                HorizontalOptions="EndAndExpand"
+                HorizontalTextAlignment="End"
+                IsVisible="{OnIdiom Default=True,
+                                    Phone=False}"
+                Style="{StaticResource PriceLabelStyle}"
+                Text="{Binding TotalPrice, StringFormat='Total: ₹{0}'}"
+                TextColor="{DynamicResource Gray-900}" />
+
+            <!--  Separator  -->
+            <BoxView
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                HeightRequest="1"
+                Style="{StaticResource BoxViewStyle}" />
+
+        </Grid>
+        <!--  Delivery Address  -->
+            <listView:SfListView x:Name="RadioGroup"
+                                 AutoFitMode="DynamicHeight"
+                                 BackgroundColor="{DynamicResource Gray-100}"
+                                 SelectionMode="Single" 
+                                 ItemsSource="{Binding DeliveryAddress}"
+                                 SelectedItem="{Binding SelectedDeliveryAddress}"
+                                 HeightRequest="300"
+                                 >
+                <listView:SfListView.ItemTemplate>
+                    <DataTemplate>
+                    <Grid
+                        x:Name="grid"
+                        VerticalOptions="{OnIdiom Default=Start, Desktop=Fill}"
+                        >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="{OnIdiom Default=*, Phone=0}" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding TagName}"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            helper:RTLHelper.Margin="{OnIdiom Desktop='16,0,0,0',
+                                                              Tablet='18,0,0,0',
+                                                              Phone='18,0,0,0'}"
+                            HorizontalOptions="{OnIdiom Default=Center,
+                                                        Phone=StartAndExpand}"
+                            Style="{StaticResource CommonLabelStyle}"
+                            TextColor="Black"
+                            FontSize="Medium"
+                            VerticalOptions="Center"/>
+
+                        <!--  Address  -->
+                        <StackLayout Spacing="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalOptions="StartAndExpand">
+                            <Label
+                            helper:RTLHelper.Margin="{OnIdiom Desktop='16,16,8,0',
+                                                              Tablet='16,0,0,0',
+                                                              Phone='25,0,0,0'}"
+                            FontFamily="{StaticResource Montserrat-Medium}"
+                            FontSize="Small"
+                            HorizontalOptions="StartAndExpand"
+                            Text="{Binding FirstName , StringFormat='Name: {0}'}"/>
+                            <Label
+                            helper:RTLHelper.Margin="{OnIdiom Desktop='16,16,8,0',
+                                                              Tablet='16,16,8,0',
+                                                              Phone='25,0,0,0'}"
+                            FontFamily="{StaticResource Montserrat-Medium}"
+                            FontSize="14"
+                            HorizontalOptions="StartAndExpand"
+                            Text="{Binding Address1}"/>
+                            
+                        </StackLayout>
+
+                        <!--  Edit/Change button  -->
+                        <buttons:SfButton
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            Margin="{OnIdiom Default='16,16,16,0',
+                                             Phone='16,2,16,0'}"
+                            BorderWidth="0"
+                            x:Name="editButton"
+                            Command="{Binding BindingContext.EditCommand, Source={x:Reference RadioGroup}}"
+                            CornerRadius="4"
+                            FontFamily="{StaticResource Montserrat-SemiBold}"
+                            FontSize="14"
+                            HeightRequest="{OnIdiom Desktop=18,
+                                                    Default=35}"
+                            HorizontalOptions="End"
+                            Style="{StaticResource SfButtonStyle}"
+                            Text="{OnIdiom Default=Edit,
+                                           Phone=Change}"
+                            TextColor="{StaticResource HyperLink}"
+                            WidthRequest="{OnIdiom Desktop=50,
+                                                   Default=80}" />
+                        <!--  Separator  -->
+                        <BoxView
+                            Grid.Row="2"
+                            Grid.ColumnSpan="4"
+                            HeightRequest="2"
+                            Style="{StaticResource BoxViewStyle}" />
+                    </Grid>
+                </DataTemplate>
+            </listView:SfListView.ItemTemplate>
+        </listView:SfListView>
+
+        <!--  Add New Address Button  -->
+        <buttons:SfButton
+            Margin="{OnIdiom Default=14,
+                             Tablet='24,2,16,24'}"
+            BorderWidth="0"
+            Command="{Binding AddAddressCommand}"
+            CornerRadius="20"
+            FontFamily="{StaticResource Montserrat-SemiBold}"
+            HeightRequest="40"
+            HorizontalOptions="{OnIdiom Default=FillAndExpand,
+                                        Phone=CenterAndExpand,
+                                        Tablet=End}"
+            Style="{StaticResource MagentaButtonStyle}"
+            Text="ADD NEW ADDRESS" 
+            WidthRequest="{OnIdiom Tablet=240,
+                                   Phone=240,
+                                   Default=-1}" />
+        <!--  Separator  -->
+        <BoxView
+                            Margin="{OnIdiom Default='16,16,16,0',
+                                             Phone='0,0,0,0'}"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="4"
+                            HeightRequest="1"
+                            Style="{StaticResource BoxViewStyle}"
+                            VerticalOptions="End" />
+    </StackLayout>
+
+</ContentView>
+<!--ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="PyConsumerApp.Views.Transaction.DeliveryView"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Welcome to Xamarin.Forms!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage-->
